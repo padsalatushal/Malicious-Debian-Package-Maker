@@ -29,6 +29,24 @@ def get_arguments():
 		
 	return args
 
+args = get_arguments()
+
+
+deb = args.deb
+bash = args.bash
+
+if not os.path.exists(deb) or not os.path.exists(bash):
+    print("[+] File Does Not Exists")
+    sys.exit()
+
+
+def read_content(script: str):
+    file = open(script, 'r')
+    content = file.read()
+    file.close()
+    return content
+
+payload = read_content(bash)
 
 
 
@@ -37,19 +55,6 @@ def get_arguments():
 
 
 
-
-
-
-
-filename = str(input("enter your file name:\n"))
-b = filename.split(".deb")
-
-def extractor(filename):
-	command = f"dpkg-deb -R {filename} ./{b[0]}"
-	os.system(command) 
-	print("[*] Package Extract Successfully")
-
-extractor(filename)
 
 
 
