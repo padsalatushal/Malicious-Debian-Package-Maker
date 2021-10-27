@@ -9,6 +9,7 @@ Date :: 24 Oct 2021
 import os
 import argparse
 import sys
+from colorama import Fore, Style
 
 
 def get_arguments():
@@ -50,10 +51,22 @@ payload = read_content(bash)
 
 
 
+def color_print(string: str , color: str, bold=False):
+	colors = {'red': Fore.RED,'blue': Fore.BLUE,
+	'green': Fore.GREEN,'yello': Fore.YELLOW}
+	if bold:
+		print(Style.BRIGHT+colors[color]+string+Style.RESET_ALL)
+	else:
+		print(colors[color]+string+Style.RESET_ALL)
 
 
 
 
+
+print(payload)
+color_print(f'{payload}','red')
+
+color_print(f'{payload}','green',True)
 
 
 
