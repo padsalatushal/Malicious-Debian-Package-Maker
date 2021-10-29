@@ -28,3 +28,6 @@ EXAMPLE - python3 ./main.py -p /tmp/file.deb -s /tmp/script.sh
 
 # Demo
 ![image](https://user-images.githubusercontent.com/57517785/139453947-710e8948-9ffe-419a-b771-46e33205f0bd.png)
+
+
+![image](https://user-images.githubusercontent.com/57517785/139454081-edebad5f-3446-4350-8595-b56a3be03f86.png)
