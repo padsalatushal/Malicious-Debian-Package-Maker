@@ -86,14 +86,31 @@ def extract(file):
 debpath = f"/tmp/{deb.split('.deb')[0]}/"
 print(debpath)
 
-
 postinst = debpath+"DEBIAN/postinst"
 preinst = debpath+"DEBIAN/preinst"
 prerm = debpath+"DEBIAN/prerm"
 postrm = debpath+"DEBIAN/postrm"
+injectablefile = ""
 
 
-if not os.path.exists(postinst):
-	print("postinst not exists")
+def checkforinjectablefile():
+	global postrm,preinst,postrm,prerm,injectablefile
+	
+
+	if os.path.exists(postinst):
+		injectablefile = postinst
+
+	if os.path.exists(preinst):
+		injectablefile = preinst
+
+	if os.path.exists(postrm):
+		injectablefile = postrm
+
+	if os.path.exists(prerm):
+		injectablefile = prerm
 
 
+	
+	print("this function working fine!!")
+
+checkforinjectablefile()
