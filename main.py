@@ -24,9 +24,9 @@ def get_arguments():
 
 	args = parser.parse_args()
 
-	if len(sys.argv) < 2:
+	if len(sys.argv) <= 4:
 		parser.print_usage()
-		sys.exit(1)
+		sys.exit()
 		
 	return args
 
@@ -35,6 +35,15 @@ args = get_arguments()
 
 deb = args.deb
 bash = args.bash
+
+if ".deb" not in deb:
+	sys.stderr.write("Enter vaild debian file")
+	sys.exit()
+
+if ".sh" not in bash:
+	sys.stderr.write("Enter vaild bash file")
+	sys.exit()
+
 
 if not os.path.exists(deb) or not os.path.exists(bash):
     print("[+] File Does Not Exists")
@@ -63,13 +72,14 @@ def color_print(string: str , color: str, bold=False):
 
 
 
-print(payload)
-color_print(f'{payload}','red')
-
-color_print(f'{payload}','green',True)
-
+#print(payload)
+#color_print(f'{payload}','red')
+#color_print(f'{payload}','green',True)
 
 
+def extract(file):
+	cmd = f"dpkg-deb -R {file} /tmp/{file.split('.deb')[0]}"  
+	os.system(cmd)
 
-
+extract(deb)
 
