@@ -8,3 +8,20 @@ cd Malicious-Debian-Package-Maker/
 chmod +x main.py
 ./main.py
 ```
+
+
+# Help
+```
+$./main.py --help
+usage: python3 ./main.py -p debian_package -s bash_script
+
+Inject bash script in debian package
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -v, --version      show the version of program
+  -s bash script     Enter your bash script path
+  -p debian package  Enter your debian package path
+
+EXAMPLE - python3 ./main.py -p /tmp/file.deb -s /tmp/script.sh
+```
