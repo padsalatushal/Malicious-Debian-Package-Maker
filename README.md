@@ -6,6 +6,6 @@ Simple script to inject bash script inside any debian package. It utilises prein
 ```bash
 git clone https://github.com/Trushal2004/Malicious-Debian-Package-Maker.git
 cd Malicious-Debian-Package-Maker/
-sudo chmod +x main.py
+chmod +x main.py
 ./main.py
 ```
