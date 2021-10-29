@@ -47,7 +47,7 @@ if ".sh" not in bash:
 
 if not os.path.exists(deb) or not os.path.exists(bash):
     print("[+] File Does Not Exists")
-    sys.exit()
+    sys.exit(1)
 
 
 def read_content(script: str):
@@ -81,5 +81,19 @@ def extract(file):
 	cmd = f"dpkg-deb -R {file} /tmp/{file.split('.deb')[0]}"  
 	os.system(cmd)
 
-extract(deb)
+#extract(deb)
+
+debpath = f"/tmp/{deb.split('.deb')[0]}/"
+print(debpath)
+
+
+postinst = debpath+"DEBIAN/postinst"
+preinst = debpath+"DEBIAN/preinst"
+prerm = debpath+"DEBIAN/prerm"
+postrm = debpath+"DEBIAN/postrm"
+
+
+if not os.path.exists(postinst):
+	print("postinst not exists")
+
 
