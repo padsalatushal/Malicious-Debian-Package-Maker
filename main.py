@@ -2,7 +2,7 @@
 
 '''
 Tool Name :: Malicious Debian Package Maker 
-Author :: Padsala Trushal
+Author :: Padsala Tushal
 Date :: 24 Oct 2021
 '''
 
